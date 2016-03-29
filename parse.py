@@ -6,10 +6,6 @@ import re
 from subprocess import call
 from bs4 import BeautifulSoup
 from datetime import datetime
- 
-parser = argparse.ArgumentParser(description="Parses song, artist and playtime information from the KEXP playlist page.")
-parser.add_argument("html", type=str, help="the HTML file containing KEXP playlist information for one hour.")
-parser.add_argument("db", type=str, nargs="?", default="", help="the location of the sqlite database")
 
 def parse_date(filename):
   # obtain the date from the filename
@@ -125,14 +121,20 @@ def insert_db(db, date, song):
 
   db.commit()
 
-args = parser.parse_args()
-songs = parse(args.html)
-date = parse_date(args.html)
 
-if args.db:
-  db = setup_db(args.db)
-  songs_to_db(db, date, songs)
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description="Parses song, artist and playtime information from the KEXP playlist page.")
+  parser.add_argument("html", type=str, help="the HTML file containing KEXP playlist information for one hour.")
+  parser.add_argument("db", type=str, nargs="?", default="", help="the location of the sqlite database")
 
-  db.close()
-else:
-  print_songs(songs, date)
+  args = parser.parse_args()
+  songs = parse(args.html)
+  date = parse_date(args.html)
+
+  if args.db:
+    db = setup_db(args.db)
+    songs_to_db(db, date, songs)
+
+    db.close()
+  else:
+    print_songs(songs, date)
