@@ -21,9 +21,10 @@ def parse_date(filename):
 def parse_play(play):
   time = parse_airdate(play)
   artist = parse_artist(play).encode("utf-8")
+  album = parse_album(play).encode("utf-8")
   song = parse_song(play).encode("utf-8")
   comment = parse_comment(play).encode("utf-8")
-  return {"time": time, "artist": artist, "song": song, "comment": comment}
+  return {"time": time, "artist": artist, "album":album, "song": song, "comment": comment}
 
 def parse_airdate(play):
   date = play.find("div", class_="AirDate").span.text
@@ -49,6 +50,10 @@ def parse_artist(play):
 
 def parse_song(play):
   div = play.find("div", class_="TrackName")
+  return div.text
+
+def parse_album(play):
+  div = play.find("div", class_="ReleaseName")
   return div.text
 
 def parse_comment(play):
